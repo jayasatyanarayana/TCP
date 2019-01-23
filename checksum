@@ -1,0 +1,33 @@
+module checksum(data,checksum);
+
+input [47:0] data;
+output [15:0] checksum;
+
+wire [15:0] ones_sum;
+
+comp_of_checksum S(data[47:32],data[31:16], data[15:0], ones_sum[15:0]);
+
+assign checksum = ~ones_sum;
+
+endmodule
+
+
+module comp_of_checksum(x, y,v, z);
+
+input [15:0] x, y,v;
+output reg [15:0] z;
+
+reg [47:0] z32;
+
+always@ (*)
+begin
+    z32 = x + y+ v;
+    if (z32 & 48'hffffff) begin  
+        z = z32;
+        z = z + 1;
+    end
+    else
+        z = z32;
+end
+
+endmodule
